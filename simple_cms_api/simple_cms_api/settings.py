@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'users',
+    'customers',
 ]
 
 MIDDLEWARE = [
@@ -94,6 +95,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files
 STATIC_URL = '/static/'
+
+MEDIA_URL = '/mediafiles/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
