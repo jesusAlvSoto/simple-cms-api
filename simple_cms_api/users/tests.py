@@ -5,7 +5,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 
 
-class UserListCreateAPIView(APITestCase):
+class UserCreate(APITestCase):
 
     def setUp(self):
         self.user_model = get_user_model()
@@ -25,17 +25,18 @@ class UserListCreateAPIView(APITestCase):
         )
         self.admin_user_token = Token.objects.create(user=self.admin_user)
 
+        self.new_user_data = {
+            'username': 'my_new_user_username',
+            'password': 'my_new_user_password',
+            'is_staff': False
+        }
+
     def test_anonymous_user_create_user_failure(self):
         """
         Ensure an anonymous user can't create a new user
         """
 
-        new_user_data = {
-            'username': 'my_new_user_username',
-            'password': 'my_new_user_password',
-            'is_staff': False
-        }
-        response = self.client.post(self.url, new_user_data, format='json')
+        response = self.client.post(self.url, self.new_user_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_normal_user_create_user_failure(self):
@@ -43,33 +44,45 @@ class UserListCreateAPIView(APITestCase):
         Ensure a normal user can't create a new user
         """
 
-        new_user_data = {
-            'username': 'my_new_user_username',
-            'password': 'my_new_user_password',
-            'is_staff': False
-        }
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.normal_user_token.key)
-        response = self.client.post(self.url, new_user_data, format='json')
+        response = self.client.post(self.url, self.new_user_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_admin_user_create_user(self):
         """
         Ensure an admin user can create a new user
         """
-        new_user_data = {
-            'username': 'my_new_user_username',
-            'password': 'my_new_user_password',
-            'is_staff': False
-        }
+
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.admin_user_token.key)
-        response = self.client.post(self.url, new_user_data, format='json')
+        response = self.client.post(self.url, self.new_user_data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # check that the user was created with the correct data
-        new_user = self.user_model.objects.get(username=new_user_data['username'])
-        self.assertEqual(new_user.check_password(new_user_data['password']), True)
-        self.assertEqual(new_user.is_staff, new_user_data['is_staff'])
+        new_user = self.user_model.objects.get(username=self.new_user_data['username'])
+        self.assertEqual(new_user.check_password(self.new_user_data['password']), True)
+        self.assertEqual(new_user.is_staff, self.new_user_data['is_staff'])
+
+
+class UserList(APITestCase):
+
+    def setUp(self):
+        self.user_model = get_user_model()
+        self.url = reverse('users:users-list')
+
+        self.normal_user = self.user_model.objects.create(
+            username='my_test_normal_username',
+            password='my_test_normal_password',
+            is_staff=False
+        )
+        self.normal_user_token = Token.objects.create(user=self.normal_user)
+
+        self.admin_user = self.user_model.objects.create(
+            username='my_test_admin_username',
+            password='my_test_admin_password',
+            is_staff=True
+        )
+        self.admin_user_token = Token.objects.create(user=self.admin_user)
 
     def test_anonymous_user_list_users_failure(self):
         """
@@ -81,7 +94,7 @@ class UserListCreateAPIView(APITestCase):
 
     def test_normal_user_list_users_failure(self):
         """
-        Ensure a normal user can't create a new user
+        Ensure a normal user can't list users
         """
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.normal_user_token.key)
@@ -90,7 +103,7 @@ class UserListCreateAPIView(APITestCase):
 
     def test_admin_user_list_users(self):
         """
-        Ensure an admin user can create a new user
+        Ensure an admin user can list users
         """
 
         # create the user which we will retrieve later
@@ -110,7 +123,7 @@ class UserListCreateAPIView(APITestCase):
         self.assertGreaterEqual(num_users, 1)
 
 
-class UserRetrieveUpdateDestroyAPIView(APITestCase):
+class UserRetrieveUpdateDestroyA(APITestCase):
 
     def setUp(self):
         self.user_model = get_user_model()

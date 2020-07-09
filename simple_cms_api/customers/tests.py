@@ -32,7 +32,9 @@ class CustomerCreate(APITestCase):
         }
 
     def tearDown(self):
-        # delete the customer's photo that has been uplaoded to the S3 bucket
+        """
+        Delete the customer's photo that has been uplaoded to the S3 bucket
+        """
         try:
             new_customer = Customer.objects.get(name=self.new_customer_data['name'])
             if new_customer and new_customer.photo:
@@ -70,7 +72,7 @@ class CustomerCreate(APITestCase):
 
     def test_authenticated_user_create_customer_image_name_changed(self):
         """
-        Ensure that a customer's photo filename is changed when the cutomer is created
+        Ensure that a customer's photo filename is changed when the customer is created
         """
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.normal_user_token.key)
@@ -146,7 +148,9 @@ class CustomerRetrieveUpdateDestroy(APITestCase):
         self.url = reverse('customers:customer-detail', args=[self.customer_to_edit.id])
 
     def tearDown(self):
-        # delete the customer's photo that has been uplaoded to the S3 bucket
+        """
+        Delete the customer's photo that has been uplaoded to the S3 bucket
+        """
         try:
             new_customer = Customer.objects.get(id=self.customer_to_edit.id)
             if new_customer and new_customer.photo:
@@ -244,7 +248,7 @@ class CustomerRetrieveUpdateDestroy(APITestCase):
 
     def test_authenticated_user_put_update_customer_image_name_changed(self):
         """
-        Ensure that a customer's photo filename is changed when the cutomer is created
+        Ensure that a customer's photo filename is changed when the customer is created
         """
 
         img = BytesIO(b'mybinarydata')
