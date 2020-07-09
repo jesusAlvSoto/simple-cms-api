@@ -55,8 +55,8 @@ class CustomerSerializer(serializers.ModelSerializer):
         uploaded_file = data.get('photo', None)
         if uploaded_file:
             if uploaded_file.content_type not in settings.ACCEPTED_PHOTO_UPLOAD_FORMATS:
-                raise serializers.ValidationError(f'Trying to upload an invalid photo format. The accepted formats are: {", ".join(settings.ACCEPTED_PHOTO_UPLOAD_FORMATS)}')
+                raise serializers.ValidationError({'photo': f'Trying to upload an invalid photo format. The accepted formats are: {", ".join(settings.ACCEPTED_PHOTO_UPLOAD_FORMATS)}'})
             elif uploaded_file.size > settings.MAX_PHOTO_UPLOAD_SIZE:
-                raise serializers.ValidationError(f'Trying to upload a photo that exceeds the maximum limit of {settings.MAX_PHOTO_UPLOAD_SIZE} bytes')
+                raise serializers.ValidationError({'photo': f'Trying to upload a photo that exceeds the maximum limit of {settings.MAX_PHOTO_UPLOAD_SIZE} bytes'})
 
         return data
