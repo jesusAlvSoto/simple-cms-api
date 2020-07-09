@@ -1,10 +1,11 @@
 from django.db import models
 from django.conf import settings
+from uuid import uuid4
 
 def rename_file(instance, filename):
     file_extension = filename.split('.')[-1]
 
-    return f'customer_{instance.id}.{file_extension}'
+    return f'{uuid4().hex}.{file_extension}'
 
 class Customer(models.Model):
     name = models.CharField(max_length=30, blank=False)

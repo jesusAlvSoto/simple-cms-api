@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Customer
 from django.conf import settings
+import boto3
 
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,7 +37,6 @@ class CustomerSerializer(serializers.ModelSerializer):
             old_photo = instance.photo
             # if photo is supplied in validated_data then delete the old photo (if there is one) from the S3 bucket
             if old_photo:
-                import boto3
                 s3_client = boto3.client(
                     's3',
                     aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
