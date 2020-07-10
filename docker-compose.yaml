@@ -8,8 +8,25 @@ services:
       - ./simple_cms_api:/usr/src/app/
     ports:
       - "8000:8000"
-    env_file:
-      - cms_api.env
+    environment:
+      # django-specific variables
+      - DEBUG=${DJANGO_DEBUG}
+      - SECRET_KEY=${DJANGO_SECRET_KEY}
+      - ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      # database variables
+      - SQL_ENGINE=${SQL_ENGINE}
+      - SQL_DATABASE=${SQL_DATABASE}
+      - SQL_USER=${SQL_USER}
+      - SQL_PASSWORD=${SQL_PASSWORD}
+      - SQL_HOST=${SQL_HOST}
+      - SQL_PORT=${SQL_PORT}
+      - DATABASE=${DATABASE}
+      # boto3 and dajngo-storages variables
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_STORAGE_BUCKET_NAME=${AWS_STORAGE_BUCKET_NAME}
+      - AWS_S3_REGION_NAME=${AWS_S3_REGION_NAME}
+      - AWS_S3_ENDPOINT_URL=${AWS_S3_ENDPOINT_URL}
     depends_on:
       - db
   db:
@@ -18,8 +35,10 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
-    env_file:
-      - cms_db.env
+    environment:
+      - POSTGRES_DB=${SQL_DATABASE}
+      - POSTGRES_USER=${SQL_USER}
+      - POSTGRES_PASSWORD=${SQL_PASSWORD}
   localstack:
     image: localstack/localstack:latest
     ports:
@@ -27,11 +46,10 @@ services:
       - '8080:8080'
     environment:
       - SERVICES=s3
-      - DEBUG=1
+      - DEBUG=${LOCALSTACK_DEBUG}
       - DATA_DIR=/tmp/localstack/data
     volumes:
-      - './.localstack:/tmp/localstack'
-      - '/var/run/docker.sock:/var/run/docker.sock'
+      - './localstack_data:/tmp/localstack'
 
 volumes:
   postgres_data:
