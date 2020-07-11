@@ -5,7 +5,7 @@ from uuid import uuid4
 def rename_file(instance, filename):
     file_extension = filename.split('.')[-1]
 
-    return f'{uuid4().hex}.{file_extension}'
+    return f'{settings.MEDIA_URL}/{uuid4().hex}.{file_extension}'
 
 class Customer(models.Model):
     name = models.CharField(max_length=30, blank=False)
