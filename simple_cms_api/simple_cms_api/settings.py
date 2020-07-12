@@ -16,7 +16,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken',
+    'oauth2_provider',
+    'corsheaders',
     'storages',
     'users',
     'customers',
@@ -25,6 +26,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -36,9 +39,25 @@ ROOT_URLCONF = 'simple_cms_api.urls'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ]
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
 }
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'oauth2_provider.backends.OAuth2Backend',
+)
+
+
+if os.environ.get('CORS_ORIGIN_ALLOW_ALL', 'False') == 'True':
+    CORS_ORIGIN_ALLOW_ALL = True
+else:
+    CORS_ORIGIN_ALLOW_ALL = False
+    CORS_ORIGIN_WHITELIST = os.environ.get('CORS_ORIGIN_WHITELIST')
 
 TEMPLATES = [
     {
@@ -104,9 +123,9 @@ AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
 AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL')  # host where files will be uploaded to
 AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN')  # host where files we be served from
 AWS_S3_SECURE_URLS = True if os.environ.get('AWS_S3_SECURE_URLS') == 'True' else False
-AWS_QUERYSTRING_AUTH = False  # removes extra parameters added to the end of the file name
-AWS_DEFAULT_ACL = None  # files uploaded will default to using the bucket's ACL
-MEDIA_URL = 'media/'  # store all the photos in this folder of the bucket AWS_STORAGE_BUCKET_NAME
+AWS_QUERYSTRING_AUTH = False
+AWS_DEFAULT_ACL = None  # uploaded files will use the bucket's ACL by default
+MEDIA_URL = 'media/'  # store all the photos in this bucket's folder
 STATIC_URL = 'static/'  # we set this so Django doesn't complain, but the setting is not used
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
