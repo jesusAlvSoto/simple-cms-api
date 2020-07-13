@@ -4,21 +4,29 @@ Simple CMS API is an API that allows you to manage users and customers.
 
 What you will find in this README:
 
-- [1. Project requirements](#1.-project-requirements)
-- [2. Architecture](#2.-architecture)
-    - [2.1. Docker](#2.1.-docker)
-        - [2.1.1 cms_api container](#2.1.1.-cms_api-container)
-        - [2.1.2 postgres container](#2.1.2.-postgres-container)
-        - [2.1.3 localstack container](#2.1.3.-localstack-container)
-    - [2.2. Users](#2.2.-users)
-    - [2.3. Customers](#2.3.-customers)
-    - [2.4. API endpoints](#2.4.-api-endpoints)
-    - [2.5. OAuth2 authentication and resource server](#2.5.-oauth2-authentication-and-resource-server)
+- [1. Project requirements](#1-project-requirements)
+- [2. Architecture](#2-architecture)
+    - [2.1. Docker](#21-docker)
+        - [2.1.1. cms_api container](#211-cms_api-container)
+        - [2.1.2. postgres container](#212-postgres-container)
+        - [2.1.3. localstack container](#213-aws-s3-container)
+    - [2.2. Users](#22-users)
+    - [2.3. Customers](#23-customers)
+    - [2.4. API endpoints](#24-api-endpoints)
+        - [2.4.1. Users API endpoints](#241-users-api-endpoints)
+        - [2.4.2. Customers API endpoints](#242-customers-api-endpoints)
+        - [2.4.3. OAuth2 authentication endpoints](#243-oauth2-authentication-endpoints)
 - [3. Getting started](#3-getting-started)
-
+    - [3.1. Clone the project](#31-Clone the project)
+    - [3.2. Environment variables](#32-environment variables)
+    - [3.3. Build the docker images and start the containers](#33-build-the-docker-images-and-start-the-containers)
+    - [3.4. Run migrations](#34-Run migrations)
+    - [3.5. Configure Localstack's AWS S3](#35-configure-Localstack's-aws-s3)
+    - [3.6. Run collectstatic](#36-run-collectstatic)
+    - [3.7. Create a superuser](#37-create-a-superuser)
+    - [3.8. Register an application](#38-register-an-application)
+    - [3.9. Use the API](#39-use-the-api)
 - [4. Running tests](#4-running-tests)
-
-- [3. Deployment](#3-deployment)
 
 
 # 1. Project requirements
@@ -35,7 +43,7 @@ These are the requirements that this project meets:
 - [X] Good README file with a getting started guide
 
 # 2. Architecture
-The project uses Docker to run three containers: the API, a Postgres database and a AWS S3 service.
+The project uses Docker to run three containers: the API, a Postgres database and a AWS S3 service (Localstack).
 
 ## 2.1. Docker
 
@@ -49,7 +57,7 @@ This container runs a Postregres database, which serves as the data store for th
 This container runs a service which emulates AWS services. For this project we only need S3.
 
 ## 2.2. Users
-*Users* interact with the API. These are the fields that a user has:
+**Users** interact with the API. These are the fields that a user has:
 * id (required)
 * username (required)
 * password (required)
@@ -66,7 +74,7 @@ There are 2 kind of users:
 
 
 ## 2.3. Customers
-Users can perform CRUD operations on *customers*. These are the fields that a customer has:
+**Customers** can perform CRUD operations on *customers*. These are the fields that a customer has:
 * id (required)
 * name (required)
 * surname (required)
@@ -199,13 +207,13 @@ CORS_ORIGIN_WHITELIST=[]
 ```
 We will see 3 containers running: *cms_api*, *db* and *localstack*.
 
-## 3.3. Run migrations
+## 3.4. Run migrations
 Once the containers are running we are ready to execute the migrations:
 ```bash
 > docker-compose exec cms_api python manage.py migrate
 ```
 
-## 3.4. Configure Localstack's AWS S3
+## 3.5. Configure Localstack's AWS S3
 Before running the `collectstatic` command we must create the bucket in the *localstack* container. 
 To create the bucket and make it public we will use *AWS CLI*. If you don't have the AWS CLI, first install it:
 ```bash
@@ -231,7 +239,7 @@ If we visit <http://localhost:8080/> we will see Localstack's web UI. Here we wo
 
 And <http://localhost:4572> will show the S3 point with some additional information.
 
-## 3.5. Run collectstatic
+## 3.6. Run collectstatic
 Now we have set up the bucket, we are ready to run the ```collectstatic``` command:
 
 ```bash
@@ -242,7 +250,7 @@ We can now see all the uploaded files if we run:
 > aws --endpoint-url=http://127.0.0.1:4572 s3api list-objects --bucket dev-bucket
 ````
 
-## 3.6. Create a superuser
+## 3.7. Create a superuser
 
 ````bash
 > docker-compose exec cms_api python manage.py createsuperuser
@@ -250,7 +258,7 @@ We can now see all the uploaded files if we run:
 Now log into the admin panel `http://localhost:8000/admin/` with this user.
 
 
-## 3.7. Register an application
+## 3.8. Register an application
 
 Before users can authenticate against the authentication server, we need to register an application. 
 
@@ -264,7 +272,7 @@ We can choose any of the grant types available in the OAuth2 protocol. Depending
 
 Please refer to the [Django OAuth Toolkit](https://django-oauth-toolkit.readthedocs.io/en/latest/index.html) documentation for in depth details.
 
-## 3.8. Use the API
+## 3.9. Use the API
 
 We have finished setting up the project and we can start using the API. 
 
@@ -276,9 +284,3 @@ To run all the tests:
 ````bash
 > docker-compose exec cms_api python manage.py test
 ````
-
-
-
-
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
