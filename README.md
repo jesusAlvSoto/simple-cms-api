@@ -17,11 +17,11 @@ What you will find in this README:
         - [2.4.2. Customers API endpoints](#242-customers-api-endpoints)
         - [2.4.3. OAuth2 authentication endpoints](#243-oauth2-authentication-endpoints)
 - [3. Getting started](#3-getting-started)
-    - [3.1. Clone the project](#31-Clone the project)
-    - [3.2. Environment variables](#32-environment variables)
+    - [3.1. Clone the project](#31-clone-the-project)
+    - [3.2. Environment variables](#32-environment-variables)
     - [3.3. Build the docker images and start the containers](#33-build-the-docker-images-and-start-the-containers)
-    - [3.4. Run migrations](#34-Run migrations)
-    - [3.5. Configure Localstack's AWS S3](#35-configure-Localstack's-aws-s3)
+    - [3.4. Run migrations](#34-run-migrations)
+    - [3.5. Configure AWS S3](#35-configure-aws-s3)
     - [3.6. Run collectstatic](#36-run-collectstatic)
     - [3.7. Create a superuser](#37-create-a-superuser)
     - [3.8. Register an application](#38-register-an-application)
@@ -149,7 +149,7 @@ http://localhost:8000/o/revoke_token/
 http://localhost:8000/o/introspect/
 ```
 
-In order for a user to use the API, an application must be registered in the authentication server. See [3.7. Register an application](#3.7.-register-an-application) 
+In order for a user to use the API, an application must be registered in the authentication server. See [3.7. Register an application](#37-register-an-application) 
 
 # 3. Getting started
 ## 3.1 Clone the project
@@ -213,7 +213,7 @@ Once the containers are running we are ready to execute the migrations:
 > docker-compose exec cms_api python manage.py migrate
 ```
 
-## 3.5. Configure Localstack's AWS S3
+## 3.5. Configure AWS S3
 Before running the `collectstatic` command we must create the bucket in the *localstack* container. 
 To create the bucket and make it public we will use *AWS CLI*. If you don't have the AWS CLI, first install it:
 ```bash
@@ -276,7 +276,7 @@ Please refer to the [Django OAuth Toolkit](https://django-oauth-toolkit.readthed
 
 We have finished setting up the project and we can start using the API. 
 
-All the available the available endpoints can be found here: [2.4. API endpoints](#2.4.-api-endpoints)
+All the available the available endpoints can be found here: [2.4. API endpoints](#24-api-endpoints)
 
 # 4. Running tests
 
