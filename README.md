@@ -69,12 +69,12 @@ This container runs a service which emulates AWS services. For this project we o
 * date joined
 
 There are 2 kind of users: 
-* **normal**: if the field *is_staff*=*False*. They can only perform CRUD operations on customers.
-* **admin**: if the field *is_staff*=*True*. They can perform CRUD operations on other users and on customers.
+* **normal**: if the field *is_staff*=*False*. They can only perform CRUD operations on customers
+* **admin**: if the field *is_staff*=*True*. They can perform CRUD operations on other users and on customers
 
 
 ## 2.3. Customers
-**Customers** can perform CRUD operations on *customers*. These are the fields that a customer has:
+Users can perform CRUD operations on **Customers**. These are the fields that a customer has:
 * id (required)
 * name (required)
 * surname (required)
@@ -139,7 +139,7 @@ There are 2 kind of users:
     --header 'Authorization: Bearer p5k70mKOHElwCiVURov6GjabuLVTNj'
     ````
 ### 2.4.3 OAuth2 authentication endpoints
-Authentication is based on the OAuth2 protocol and implemented using the [Django OAuth Toolkit](https://django-oauth-toolkit.readthedocs.io/en/latest/index.html) package, 
+Authentication is based on the OAuth2 protocol and implemented using the [Django OAuth Toolkit](https://django-oauth-toolkit.readthedocs.io/en/latest/index.html) package. 
 
 The following endpoints are available to authorize, obtain (and refresh), revoke and instrospect tokens:
 ```
@@ -149,7 +149,7 @@ http://localhost:8000/o/revoke_token/
 http://localhost:8000/o/introspect/
 ```
 
-In order for a user to use the API, an application must be registered in the authentication server. See [3.7. Register an application](#37-register-an-application) 
+In order for a user to use the API, an application must be registered in the authentication server. See [3.8. Register an application](#38-register-an-application) 
 
 # 3. Getting started
 ## 3.1 Clone the project
@@ -276,7 +276,7 @@ Please refer to the [Django OAuth Toolkit](https://django-oauth-toolkit.readthed
 
 We have finished setting up the project and we can start using the API. 
 
-All the available the available endpoints can be found here: [2.4. API endpoints](#24-api-endpoints)
+All the available endpoints can be found here: [2.4. API endpoints](#24-api-endpoints)
 
 # 4. Running tests
 
