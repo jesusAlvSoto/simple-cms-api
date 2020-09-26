@@ -15,3 +15,7 @@ class CustomerDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, TokenHasReadWriteScope]
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save(update_fields=['is_active'])
